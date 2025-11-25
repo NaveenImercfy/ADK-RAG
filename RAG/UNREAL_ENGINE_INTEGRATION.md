@@ -37,82 +37,28 @@ Vertex AI RAG Engine (Textbooks)
 
 3. **Unreal Engine 5:**
    - Version 5.0 or later
-   - HTTP plugin enabled
-   - JSON plugin enabled
+   - HTTP plugin enabled (Edit → Plugins → HTTP)
+   - JSON plugin enabled (Edit → Plugins → JSON)
 
-## Integration Methods
+## Setup Steps
 
-### Method 1: HTTP REST API Integration (Recommended)
+### Step 1: Add C++ Classes to Your Project
 
-This method uses HTTP requests to communicate with the deployed agent.
+1. In Unreal Editor, go to **Tools → New C++ Class**
+2. Choose **Object** as the parent class
+3. Name it `RAGAgentAPI`
+4. This will create `RAGAgentAPI.h` and `RAGAgentAPI.cpp` in your `Source/YourProjectName/` directory
 
-#### Step 1: Create Unreal Engine Plugin Structure
+### Step 2: Update Your Project's Build.cs File
 
-Create a plugin directory structure:
-```
-Plugins/
-└── StudentRAGAgent/
-    ├── Source/
-    │   └── StudentRAGAgent/
-    │       ├── StudentRAGAgent.Build.cs
-    │       ├── StudentRAGAgent.h
-    │       ├── StudentRAGAgent.cpp
-    │       ├── RAGAgentAPI.h
-    │       ├── RAGAgentAPI.cpp
-    │       ├── RAGSessionManager.h
-    │       └── RAGSessionManager.cpp
-    └── StudentRAGAgent.uplugin
-```
-
-#### Step 2: Plugin Descriptor (StudentRAGAgent.uplugin)
-
-```json
-{
-  "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.0",
-  "FriendlyName": "Student RAG Agent",
-  "Description": "Integration with Student Educational RAG Agent for Vertex AI",
-  "Category": "Education",
-  "CreatedBy": "Your Name",
-  "CreatedByURL": "",
-  "DocsURL": "",
-  "MarketplaceURL": "",
-  "SupportURL": "",
-  "EngineVersion": "5.0.0",
-  "CanContainContent": true,
-  "IsBetaVersion": false,
-  "IsExperimentalVersion": false,
-  "EnabledByDefault": true,
-  "CanBeUsedWithUnrealHeaderTool": true,
-  "Modules": [
-    {
-      "Name": "StudentRAGAgent",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    }
-  ],
-  "Plugins": [
-    {
-      "Name": "HTTP",
-      "Enabled": true
-    },
-    {
-      "Name": "Json",
-      "Enabled": true
-    }
-  ]
-}
-```
-
-#### Step 3: Build File (StudentRAGAgent.Build.cs)
+Open `Source/YourProjectName/YourProjectName.Build.cs` and add HTTP and JSON modules:
 
 ```csharp
 using UnrealBuildTool;
 
-public class StudentRAGAgent : ModuleRules
+public class YourProjectName : ModuleRules
 {
-    public StudentRAGAgent(ReadOnlyTargetRules Target) : base(Target)
+    public YourProjectName(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
         
@@ -124,16 +70,17 @@ public class StudentRAGAgent : ModuleRules
             "Json",
             "JsonUtilities"
         });
-        
-        PrivateDependencyModuleNames.AddRange(new string[] {
-            "Slate",
-            "SlateCore"
-        });
     }
 }
 ```
 
-#### Step 4: RAG Agent API Header (RAGAgentAPI.h)
+### Step 3: Replace the Generated Code
+
+Replace the contents of `RAGAgentAPI.h` and `RAGAgentAPI.cpp` with the code below.
+
+## C++ Implementation
+
+### RAGAgentAPI.h
 
 ```cpp
 #pragma once
@@ -180,7 +127,7 @@ struct FAgentResponse
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAgentResponse, const FAgentResponse&, Response, bool, bSuccess);
 
 UCLASS(BlueprintType, Blueprintable)
-class STUDENTRAGAGENT_API URAGAgentAPI : public UObject
+class YOURPROJECTNAME_API URAGAgentAPI : public UObject
 {
     GENERATED_BODY()
 
@@ -225,7 +172,6 @@ private:
     FStudentContext CurrentContext;
 
     void GetAccessToken();
-    void OnAccessTokenReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
     void OnSessionCreated(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
     void OnQuestionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
     FString BuildQueryMessage(const FString& Question, const FStudentContext& Context);
@@ -233,7 +179,9 @@ private:
 };
 ```
 
-#### Step 5: RAG Agent API Implementation (RAGAgentAPI.cpp)
+**Important:** Replace `YOURPROJECTNAME_API` with your actual project name (e.g., `MYGAME_API`).
+
+### RAGAgentAPI.cpp
 
 ```cpp
 #include "RAGAgentAPI.h"
@@ -477,169 +425,225 @@ FAgentResponse URAGAgentAPI::ParseAgentResponse(const FString& ResponseBody)
 }
 ```
 
-### Method 2: Blueprint Integration
+### Step 4: Compile Your Project
 
-Create Blueprint classes that wrap the C++ API for easier use in Blueprints.
+1. Close Unreal Editor
+2. Right-click on your `.uproject` file
+3. Select **Generate Visual Studio project files** (or Xcode on Mac)
+4. Open the project in your IDE and compile
+5. Launch Unreal Editor again
 
-#### Blueprint: BP_RAGAgentManager
+## Blueprint Usage
 
-1. Create a Blueprint class based on `URAGAgentAPI`
-2. Add Blueprint nodes for:
-   - Initialize Agent
-   - Set Student Context
-   - Ask Question
-   - Handle Response
+### Creating a Blueprint Based on RAGAgentAPI
 
-#### Example Blueprint Usage:
+1. In Content Browser, right-click and select **Blueprint Class**
+2. Search for `RAGAgentAPI` and select it
+3. Name it `BP_RAGAgentManager`
+4. Open the Blueprint
 
+### Basic Blueprint Setup
+
+#### Event BeginPlay
+
+```
+Event BeginPlay
+    → Initialize Agent
+        - ProjectID: "your-project-id"
+        - Location: "us-central1"
+        - AgentEngineID: "your-agent-engine-id"
+    → Create Session
+        - UserID: "student_001"
+```
+
+#### Setting Student Context
+
+```
+Set Student Context
+    - Context
+        - EducationBoard: "CBSE"
+        - Grade: "Grade 10"
+        - Subject: "Science"
+```
+
+#### Asking a Question
+
+```
+Send Question With Context
+    - Question: "What is photosynthesis?"
+```
+
+#### Handling the Response
+
+1. In the Blueprint, find the **On Agent Response** event
+2. Connect it to display the response:
+
+```
+On Agent Response
+    → Branch (bSuccess)
+        True → Print String (Response.Text)
+        True → For Each Loop (Response.Citations)
+            → Print String (Current Array Element)
+```
+
+### Complete Blueprint Example
+
+**Event Graph:**
 ```
 Event BeginPlay
     → Initialize Agent (ProjectID, Location, AgentEngineID)
     → Create Session (UserID)
-    
-On Button Click (Ask Question)
     → Set Student Context (Board: "CBSE", Grade: "Grade 10", Subject: "Science")
-    → Send Question ("What is photosynthesis?")
-    
-On Agent Response
-    → Display Text in UI
-    → Show Citations
 ```
 
-### Method 3: Widget UI Integration
+**On Button Click (Ask Question):**
+```
+On Button Clicked
+    → Get Text from Text Input Box
+    → Send Question With Context
+```
 
-Create a UI widget for student interaction.
+**On Agent Response:**
+```
+On Agent Response
+    → Branch (bSuccess)
+        True → Set Text (Response Text Box) = Response.Text
+        True → Clear Citations List
+        True → For Each Loop (Response.Citations)
+            → Add to Citations List
+```
 
-#### Widget Blueprint: WBP_StudentRAGChat
+## Widget UI Integration
 
-**Components:**
-- Text Input Box (for questions)
-- Scrollable Text Box (for responses)
-- Context Selection (Board, Grade, Subject dropdowns)
-- Send Button
-- Citations Display
+### Creating a Chat Widget
 
-**Blueprint Logic:**
-```cpp
-// On Send Button Clicked
-void OnSendButtonClicked()
-{
-    FString Question = QuestionInputBox->GetText().ToString();
-    FStudentContext Context;
-    Context.EducationBoard = BoardDropdown->GetSelectedOption();
-    Context.Grade = GradeDropdown->GetSelectedOption();
-    Context.Subject = SubjectDropdown->GetSelectedOption();
-    
-    RAGAgentAPI->SendQuestion(Question, Context);
-}
+1. Create a **Widget Blueprint** named `WBP_StudentRAGChat`
+2. Add the following UI elements:
+   - **Text Input Box** (for questions) - Variable: `QuestionInputBox`
+   - **Scrollable Text Box** (for responses) - Variable: `ResponseTextBox`
+   - **Combo Box** for Education Board - Variable: `BoardDropdown`
+   - **Combo Box** for Grade - Variable: `GradeDropdown`
+   - **Combo Box** for Subject - Variable: `SubjectDropdown`
+   - **Button** (Send) - Variable: `SendButton`
+   - **Text Block** (for citations) - Variable: `CitationsTextBlock`
 
-// On Agent Response
-void OnAgentResponseReceived(const FAgentResponse& Response, bool bSuccess)
-{
-    if (bSuccess)
-    {
-        ResponseTextBox->SetText(FText::FromString(Response.Text));
-        
-        // Display citations
-        FString CitationsText = TEXT("Citations:\n");
-        for (const FString& Citation : Response.Citations)
-        {
-            CitationsText += FString::Printf(TEXT("- %s\n"), *Citation);
-        }
-        CitationsTextBox->SetText(FText::FromString(CitationsText));
-    }
-}
+### Widget Blueprint Logic
+
+**On Send Button Clicked:**
+```
+On Send Button Clicked
+    → Get Text from QuestionInputBox
+    → Make Student Context
+        - EducationBoard: Get Selected Option from BoardDropdown
+        - Grade: Get Selected Option from GradeDropdown
+        - Subject: Get Selected Option from SubjectDropdown
+    → Get RAGAgentAPI (from parent or create new)
+    → Set Student Context
+    → Send Question With Context
+```
+
+**On Agent Response:**
+```
+On Agent Response
+    → Branch (bSuccess)
+        True → Set Text (ResponseTextBox) = Response.Text
+        True → Build Citations String
+        True → Set Text (CitationsTextBlock) = Citations String
+        False → Set Text (ResponseTextBox) = "Error: " + Response.ErrorMessage
 ```
 
 ## Configuration
 
-### Step 1: Create Configuration File
+### Access Token Setup (Development)
 
-Create `Config/DefaultRAGAgent.ini`:
+For development, create an access token file:
 
-```ini
-[RAGAgent]
-ProjectID=your-project-id
-Location=us-central1
-AgentEngineID=projects/123/locations/us-central1/reasoningEngines/456
-DefaultUserID=student_001
-```
+1. Run in terminal:
+   ```bash
+   gcloud auth print-access-token > Config/gcloud_token.txt
+   ```
 
-### Step 2: Load Configuration in C++
+2. Place `gcloud_token.txt` in your project's `Config/` folder
 
-```cpp
-void URAGAgentAPI::LoadConfiguration()
-{
-    FString ConfigPath = FPaths::Combine(FPaths::ProjectConfigDir(), TEXT("DefaultRAGAgent.ini"));
-    // Load configuration values
-}
-```
+**Note:** For production, implement proper service account authentication.
 
-## Authentication Setup
+## Example Usage in C++
 
-### Option 1: Service Account (Recommended for Production)
-
-1. Create a service account in GCP
-2. Download JSON key
-3. Store securely in Unreal (use encrypted storage)
-4. Use service account for authentication
-
-### Option 2: OAuth 2.0 Flow
-
-Implement OAuth 2.0 flow for user authentication.
-
-### Option 3: Access Token File (Development Only)
-
-For development, save access token to file:
-```bash
-gcloud auth print-access-token > Config/gcloud_token.txt
-```
-
-## Example Usage in Game
-
-### Scenario: Educational Game with RAG Agent
+### In Your Game Character Class
 
 ```cpp
-// In your game character class
-class AStudentCharacter : public ACharacter
+// In your character header file
+UCLASS()
+class YOURPROJECTNAME_API AStudentCharacter : public ACharacter
 {
+    GENERATED_BODY()
+
+public:
+    AStudentCharacter();
+    
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     class URAGAgentAPI* RAGAgent;
     
-    void BeginPlay() override
-    {
-        // Initialize RAG Agent
-        RAGAgent = NewObject<URAGAgentAPI>(this);
-        RAGAgent->Initialize(ProjectID, Location, AgentEngineID);
-        RAGAgent->CreateSession(GetPlayerID());
-        
-        // Set student context
-        FStudentContext Context;
-        Context.EducationBoard = TEXT("CBSE");
-        Context.Grade = TEXT("Grade 10");
-        Context.Subject = TEXT("Science");
-        RAGAgent->SetStudentContext(Context);
-        
-        // Bind response handler
-        RAGAgent->OnAgentResponse.AddDynamic(this, &AStudentCharacter::OnRAGResponse);
-    }
+    void BeginPlay() override;
+    
+    UFUNCTION(BlueprintCallable)
+    void AskQuestion(const FString& Question);
     
     UFUNCTION()
-    void AskQuestion(const FString& Question)
+    void OnRAGResponse(const FAgentResponse& Response, bool bSuccess);
+};
+```
+
+```cpp
+// In your character implementation file
+#include "StudentCharacter.h"
+#include "RAGAgentAPI.h"
+
+AStudentCharacter::AStudentCharacter()
+{
+    PrimaryActorTick.bCanEverTick = false;
+}
+
+void AStudentCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    // Initialize RAG Agent
+    RAGAgent = NewObject<URAGAgentAPI>(this);
+    RAGAgent->Initialize(TEXT("your-project-id"), TEXT("us-central1"), TEXT("your-agent-engine-id"));
+    RAGAgent->CreateSession(TEXT("student_001"));
+    
+    // Set student context
+    FStudentContext Context;
+    Context.EducationBoard = TEXT("CBSE");
+    Context.Grade = TEXT("Grade 10");
+    Context.Subject = TEXT("Science");
+    RAGAgent->SetStudentContext(Context);
+    
+    // Bind response handler
+    RAGAgent->OnAgentResponse.AddDynamic(this, &AStudentCharacter::OnRAGResponse);
+}
+
+void AStudentCharacter::AskQuestion(const FString& Question)
+{
+    if (RAGAgent)
     {
         RAGAgent->SendQuestionWithContext(Question);
     }
-    
-    UFUNCTION()
-    void OnRAGResponse(const FAgentResponse& Response, bool bSuccess)
+}
+
+void AStudentCharacter::OnRAGResponse(const FAgentResponse& Response, bool bSuccess)
+{
+    if (bSuccess)
     {
-        if (bSuccess)
-        {
-            // Display response in game UI
-            DisplayAnswer(Response.Text, Response.Citations);
-        }
+        UE_LOG(LogTemp, Log, TEXT("Agent Response: %s"), *Response.Text);
+        // Display response in game UI
     }
-};
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Agent Error: %s"), *Response.ErrorMessage);
+    }
+}
 ```
 
 ## Features Included
@@ -657,36 +661,32 @@ class AStudentCharacter : public ACharacter
 ### Test in Editor
 
 1. Create a test level
-2. Add RAG Agent Manager actor
+2. Add a Blueprint actor with RAGAgentAPI component
 3. Configure with your credentials
 4. Test questions in Play mode
 
 ### Test Scenarios
 
-```cpp
-// Test 1: Question with context
-SetContext("CBSE", "Grade 10", "Science");
-SendQuestion("What is photosynthesis?");
+**In Blueprint or C++:**
 
-// Test 2: Question without context
-SendQuestion("What is a quadratic equation?");
+1. **Question with context:**
+   - Set Context: "CBSE", "Grade 10", "Science"
+   - Send Question: "What is photosynthesis?"
 
-// Test 3: Follow-up question (context remembered)
-SendQuestion("What about cellular respiration?");
+2. **Follow-up question (context remembered):**
+   - Send Question: "What about cellular respiration?"
 
-// Test 4: Different student
-CreateSession("student_002");
-SetContext("ICSE", "Class 9", "Mathematics");
-SendQuestion("What is algebra?");
-```
+3. **Different student:**
+   - Create Session: "student_002"
+   - Set Context: "ICSE", "Class 9", "Mathematics"
+   - Send Question: "What is algebra?"
 
 ## Performance Considerations
 
 1. **Async Operations:** All HTTP calls are asynchronous
 2. **Caching:** Consider caching common questions
 3. **Rate Limiting:** Implement rate limiting for API calls
-4. **Connection Pooling:** Reuse HTTP connections
-5. **Error Retry:** Implement exponential backoff for retries
+4. **Error Retry:** Implement exponential backoff for retries
 
 ## Security Best Practices
 
@@ -711,28 +711,36 @@ SendQuestion("What is algebra?");
 ### Issue: Wrong Context Used
 **Solution:** Ensure SetStudentContext is called before SendQuestion
 
+### Issue: Compilation Errors
+**Solution:** 
+- Make sure HTTP and JSON plugins are enabled
+- Check that you've updated your Build.cs file
+- Verify the API macro matches your project name
+
 ## Additional Resources
 
 - [Unreal Engine HTTP Plugin Documentation](https://docs.unrealengine.com/5.0/en-US/http-plugin-in-unreal-engine/)
 - [Unreal Engine JSON Plugin](https://docs.unrealengine.com/5.0/en-US/json-in-unreal-engine/)
 - [Vertex AI Agent Engine API](https://cloud.google.com/vertex-ai/docs/agent-engine/overview)
 
-## Complete Example Project Structure
+## Project Structure
+
+After integration, your project structure should look like:
 
 ```
-YourGame/
-├── Plugins/
-│   └── StudentRAGAgent/
-│       └── (Plugin files as described above)
+YourProject/
+├── Source/
+│   └── YourProjectName/
+│       ├── YourProjectName.Build.cs (updated with HTTP/JSON)
+│       ├── RAGAgentAPI.h
+│       └── RAGAgentAPI.cpp
 ├── Content/
 │   ├── Blueprints/
-│   │   ├── BP_RAGAgentManager
-│   │   └── BP_StudentCharacter
+│   │   └── BP_RAGAgentManager
 │   └── UI/
 │       └── WBP_StudentRAGChat
 └── Config/
-    └── DefaultRAGAgent.ini
+    └── gcloud_token.txt (for development)
 ```
 
 This integration provides a complete solution for using the Student Educational RAG Agent in Unreal Engine 5 with all features enabled.
-
