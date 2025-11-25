@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+"""Agent modules for the sequential explanation workflow.
 
-import google.auth
+This package contains individual agent modules that are used as sub-agents
+in the sequential explanation agent workflow.
+"""
 
-_, project_id = google.auth.default()
-os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
-os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
-os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
+from .context_extractor_agent import create_context_extractor_agent
+from .explanation_generator_agent import create_explanation_generator_agent
+from .rag_retrieval_agent import create_rag_retrieval_agent
 
-from . import agent
-from . import explanation_agent
+__all__ = [
+    'create_context_extractor_agent',
+    'create_rag_retrieval_agent',
+    'create_explanation_generator_agent',
+]
 
-__all__ = ['agent', 'explanation_agent']

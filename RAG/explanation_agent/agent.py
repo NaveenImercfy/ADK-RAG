@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Agent module for the Sequential Explanation Agent.
+
+This module exports the root_agent that ADK CLI expects to find.
+The agent is a SequentialAgent that orchestrates a three-stage workflow:
+1. Context Extraction
+2. RAG Retrieval
+3. Explanation Generation
+"""
+
 import os
 
 import google.auth
@@ -21,7 +30,9 @@ os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
 
-from . import agent
-from . import explanation_agent
+# Import the explanation agent
+from rag.explanation_agent import explanation_agent
 
-__all__ = ['agent', 'explanation_agent']
+# ADK CLI expects 'root_agent' to be exported from agent.py
+root_agent = explanation_agent
+
