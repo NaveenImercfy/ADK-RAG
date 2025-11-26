@@ -24,17 +24,17 @@ def return_instructions_context_extractor() -> str:
     """Returns the instruction prompt for the context extractor agent.
     
     The context extractor agent analyzes user queries to identify:
-    - Education Board (e.g., CBSE, ICSE, State Board, IB, etc.)
+    - Education Board (e.g., CBSE, ICSE, State Board, or specific state boards like "Tamil Nadu State Board", "Maharashtra State Board", IB, etc.)
     - Grade Level (e.g., Grade 1, Grade 2, Class 10, etc.)
     - Subject (e.g., Mathematics, Science, English, History, etc.)
     
     Returns:
         str: The instruction prompt for the context extractor agent.
     """
-    instruction_prompt = """
+        instruction_prompt = """
         You are a Context Extractor Agent. Your role is to analyze user queries and extract
         the following information:
-        1. **Education Board** (e.g., CBSE, ICSE, State Board, IB, IGCSE, etc.)
+        1. **Education Board** (e.g., CBSE, ICSE, State Board, or specific state boards like "Tamil Nadu State Board", "Maharashtra State Board", IB, IGCSE, etc.)
         2. **Grade Level** (e.g., Grade 1, Grade 2, Class 10, Class 12, etc.)
         3. **Subject** (e.g., Mathematics, Science, English, History, Physics, Chemistry, etc.)
         
@@ -48,15 +48,23 @@ def return_instructions_context_extractor() -> str:
         **Output Format:**
         You must output the extracted information in the following JSON format:
         {
-            "board": "CBSE" or "ICSE" or "State Board" or "IB" or "Not Specified",
+            "board": "CBSE" or "ICSE" or "State Board" or specific state board name (e.g., "Tamil Nadu State Board", "Maharashtra State Board") or "IB" or "Not Specified",
             "grade": "Grade 10" or "Class 9" or "Not Specified",
             "subject": "Science" or "Mathematics" or "English" or "Not Specified"
         }
+        
+        **Important Board Extraction Rules:**
+        - If a specific state board is mentioned (e.g., "Tamil Nadu State Board", "Maharashtra State Board"), extract the FULL name
+        - Only use generic "State Board" if the user mentions "state board" without specifying which state
+        - Preserve the exact state name as mentioned by the user (e.g., "Tamil Nadu State Board", not just "State Board")
         
         **Examples:**
         
         User Query: "I'm studying CBSE Grade 10 Science. Can you explain photosynthesis?"
         Output: {"board": "CBSE", "grade": "Grade 10", "subject": "Science"}
+        
+        User Query: "I'm studying Tamil Nadu State Board Grade 4 Science. What is photosynthesis?"
+        Output: {"board": "Tamil Nadu State Board", "grade": "Grade 4", "subject": "Science"}
         
         User Query: "What is a quadratic equation?"
         Output: {"board": "Not Specified", "grade": "Not Specified", "subject": "Not Specified"}
@@ -66,6 +74,9 @@ def return_instructions_context_extractor() -> str:
         
         User Query: "Explain Newton's laws for Grade 11 Physics"
         Output: {"board": "Not Specified", "grade": "Grade 11", "subject": "Physics"}
+        
+        User Query: "I'm studying Maharashtra State Board Class 12 Mathematics"
+        Output: {"board": "Maharashtra State Board", "grade": "Class 12", "subject": "Mathematics"}
         
         **Important:**
         - Output ONLY the JSON object, no additional text

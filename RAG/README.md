@@ -228,7 +228,7 @@ Citations:
 Student: What is a quadratic equation?
 
 Agent: I'd be happy to help you understand quadratic equations! To provide you with the most accurate answer from your textbook, could you please tell me:
-- Your education board (e.g., CBSE, ICSE, State Board)
+- Your education board (e.g., CBSE, ICSE, Tamil Nadu State Board, Maharashtra State Board, or other state boards)
 - Your grade level (e.g., Grade 10, Class 9)
 - The subject (e.g., Mathematics)
 
