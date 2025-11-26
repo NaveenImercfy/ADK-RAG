@@ -48,9 +48,10 @@ TEXTBOOKS = [
         "board": "CBSE",
         "grade": "Grade 10",
         "subject": "Science",
-        "pdf_url": "https://firebasestorage.googleapis.com/v0/b/aitrack-29a9e.appspot.com/o/4_Science_Term_1.pdf?alt=media&token=a5c75861-5524-475e-925a-c070d757dace",
-        "display_name": "CBSE_Grade10_Science_Term1.pdf",
-        "description": "CBSE Grade 10 Science Textbook - Term 1"
+         "pdf_url": "https://storage.cloud.google.com/textbook_corpus_data/TN/8_STD/TamilNaduStateBoard_Grade8_Science.pdf",
+       # "pdf_url": "https://firebasestorage.googleapis.com/v0/b/aitrack-29a9e.appspot.com/o/4_Science_Term_1.pdf?alt=media&token=a5c75861-5524-475e-925a-c070d757dace",
+        "display_name": "TamilNaduStateBoard_Grade8_Science.pdf",
+        "description": "TamilNaduStateBoard Grade8 Science"
     },
     # Add more textbooks here following the same structure:
     # {

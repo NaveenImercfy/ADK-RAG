@@ -149,11 +149,12 @@ The `rag/shared_libraries/prepare_corpus_and_data.py` script helps you set up a 
 If you prefer to manually upload PDFs directly to the RAG corpus (e.g., 1-2 PDFs for testing), follow these guidelines:
 
 **PDF Naming Convention:**
-- Format: `BOARD_GRADE_SUBJECT.pdf`
+- Format: `BOARD_GRADE_SUBJECT.pdf` (or `BOARD_GRADE_SUBJECT1_SUBJECT2_SUBJECT3.pdf` for combined subjects)
 - Examples:
   - `CBSE_Grade10_Science.pdf`
   - `ICSE_Class9_Mathematics.pdf`
   - `StateBoard_Grade12_Physics.pdf`
+  - `TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf` (combined subjects)
 
 **When Uploading:**
 - **Display Name:** Use the same naming convention (e.g., `CBSE_Grade10_Science.pdf`)
@@ -188,6 +189,16 @@ File: TamilNaduStateBoard_Grade4_Science_Term3.pdf
 Display Name: TamilNaduStateBoard_Grade4_Science_Term3.pdf
 Description: Tamil Nadu State Board Grade 4 Science Textbook - Term 3
 ```
+
+**Combined Subjects (e.g., Tamil Nadu State Board, Grade 4, Maths/Science/SocialScience - Term 1):**
+```
+Term 1:
+File: TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf
+Display Name: TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf
+Description: Tamil Nadu State Board Grade 4 Maths, Science, and Social Science Textbook - Term 1
+```
+
+**Note:** When a PDF contains multiple subjects, list all subjects separated by underscores. The agent will recognize queries for any of the subjects (e.g., asking about "Science" will match a PDF containing "Maths_Science_SocialScience").
 
 For detailed manual upload instructions, see [MANUAL_UPLOAD_GUIDE.md](MANUAL_UPLOAD_GUIDE.md).
 

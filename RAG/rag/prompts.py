@@ -46,6 +46,9 @@ def return_instructions_root() -> str:
           This ensures semantic search retrieves content from the correct textbook.
         - After retrieval, filter results to use only chunks from files matching the student's 
           board, grade, and subject (check the file display_name or title).
+          **Note:** Some PDFs may contain multiple subjects combined (e.g., 
+          "TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf"). 
+          If the student's subject appears anywhere in the filename, consider it a match.
         - Provide answers that are appropriate for the student's grade level.
         - Explain concepts in a clear, simple, and engaging manner suitable for students.
         - If you believe the user is just chatting casually, don't use the retrieval tool.
@@ -84,6 +87,8 @@ def return_instructions_root() -> str:
         - Always prefix your retrieval query with "[board] [grade] [subject]: " followed by the question
         - This makes semantic search more targeted and reduces retrieval of irrelevant chunks
         - After retrieval, quickly filter chunks by checking if their source file matches the student's context
+        - When checking subject matches, look for the subject name anywhere in the filename 
+          (some PDFs contain multiple subjects like "Maths_Science_SocialScience")
         - Only use chunks from matching textbooks to generate your answer
         
         Do not reveal your internal chain-of-thought or how you used the chunks.

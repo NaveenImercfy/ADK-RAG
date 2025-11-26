@@ -33,12 +33,20 @@ BOARD_GRADE_SUBJECT.pdf
 - `TamilNaduStateBoard_Grade4_Science_Term2.pdf`
 - `TamilNaduStateBoard_Grade4_Science_Term3.pdf`
 
+**For combined subjects (multiple subjects in one PDF):**
+- `TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf`
+- `CBSE_Grade5_Mathematics_Science_English.pdf`
+- `ICSE_Class6_Science_Geography_History.pdf`
+
+**Note:** When multiple subjects are combined in one PDF, list all subjects separated by underscores. The agent will recognize and match queries for any of the subjects in the filename.
+
 ### Naming Rules
 
 1. **Use underscores (`_`)** to separate components
 2. **Board name** should be clear and consistent (e.g., `CBSE`, `ICSE`, `StateBoard`, `IB`)
 3. **Grade** can be in format: `Grade10`, `Class9`, `Year11`, etc.
 4. **Subject** should be the full subject name (e.g., `Science`, `Mathematics`, `English`)
+   - **For combined subjects:** List all subjects separated by underscores (e.g., `Maths_Science_SocialScience`)
 5. **Optional:** Add term/part information if needed (e.g., `Term1`, `Part1`)
 
 ## Upload Information
@@ -135,6 +143,14 @@ gcloud ai rag-files upload \
 - **Display Name:** `ICSE_Class9_Mathematics.pdf`
 - **Description:** `ICSE Class 9 Mathematics Textbook`
 
+### Example 4: Combined Subjects (Multiple Subjects in One PDF)
+**Tamil Nadu State Board Grade 4 - Maths, Science, and Social Science (Term 1):**
+- **File:** `TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf`
+- **Display Name:** `TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf`
+- **Description:** `Tamil Nadu State Board Grade 4 Maths, Science, and Social Science Textbook - Term 1`
+
+**Note:** When uploading combined subject PDFs, include all subjects in both the filename and description. The agent will recognize queries for any of the subjects listed (e.g., a query about "Science" will match this PDF).
+
 ## Best Practices
 
 1. **Be Consistent:** Use the same naming pattern for all PDFs
@@ -152,11 +168,21 @@ When a student asks: *"I'm studying Tamil Nadu State Board Grade 4 Science. What
 3. **Filters chunks** by checking if the source file's display_name contains:
    - "TamilNaduStateBoard" (or "Tamil Nadu State Board")
    - "Grade4" (or "Grade 4")
-   - "Science"
+   - "Science" (or "Maths", "SocialScience" if asking about those subjects)
 4. Uses chunks from **all matching terms** (Term1, Term2, Term3) if the question doesn't specify a term
 5. Citations show: `Tamil Nadu State Board Grade 4 Science Textbook - Term 1` (or appropriate term)
 
 **Note:** When a student doesn't specify a term, the agent will search across all terms (Term1, Term2, Term3) to find the most relevant answer. If you want to restrict to a specific term, the student should mention it in their question.
+
+### Combined Subjects Handling
+
+When a PDF contains multiple subjects (e.g., `TamilNaduStateBoard_Grade4_Maths_Science_SocialScience_Term1.pdf`):
+
+- If a student asks about **Science**, the agent will match this PDF because "Science" is in the filename
+- If a student asks about **Maths**, the agent will match this PDF because "Maths" is in the filename
+- If a student asks about **SocialScience**, the agent will match this PDF because "SocialScience" is in the filename
+
+The agent checks if the requested subject appears anywhere in the filename, so combined subject PDFs work seamlessly.
 
 ## Troubleshooting
 

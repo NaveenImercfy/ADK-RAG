@@ -67,8 +67,8 @@ def create_rag_retrieval_agent(model: str = 'gemini-2.5-flash') -> Agent:
         description=(
             'Use this tool to retrieve relevant content from student textbooks in the RAG corpus. '
             'The corpus contains PDFs organized by education board, grade level, and subject. '
-            'IMPORTANT: When calling this tool, you MUST include the student\'s education board, '
-            'grade, and subject in the query string to make retrieval more targeted and efficient. '
+            'When calling this tool, include the student\'s education board, grade, and subject in the query string '
+            'to make retrieval more targeted and efficient. '
             'Format your query as: "[board] [grade] [subject]: [student question]" '
             'Example: "CBSE Grade 10 Science: What is photosynthesis?" '
             'This ensures semantic search retrieves content primarily from the correct textbook, '
