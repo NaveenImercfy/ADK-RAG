@@ -31,7 +31,7 @@ def return_instructions_context_extractor() -> str:
     Returns:
         str: The instruction prompt for the context extractor agent.
     """
-        instruction_prompt = """
+    instruction_prompt = """
         You are a Context Extractor Agent. Your role is to analyze user queries and extract
         the following information:
         1. **Education Board** (e.g., CBSE, ICSE, State Board, or specific state boards like "Tamil Nadu State Board", "Maharashtra State Board", IB, IGCSE, etc.)
